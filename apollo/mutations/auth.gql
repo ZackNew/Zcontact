@@ -1,0 +1,11 @@
+import gql from "graphql-tag";
+
+export default {
+  signin: gql`
+    mutation ($password: String!, $username: String!) {
+      signin(password: $password, username: $username) {
+        token
+      }
+    }
+  `,
+};
