@@ -1,0 +1,5 @@
+mutation deleteContact($id: Int!) {
+  delete_contacts_by_pk(id: $id) {
+    id
+  }
+}

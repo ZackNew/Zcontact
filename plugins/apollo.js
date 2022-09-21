@@ -19,45 +19,48 @@ export default function ({ store, app }, inject) {
     };
   };
 
-  // const errorLink = onError(({ graphQLErrors, networkError }) => {
-  //   if (
-  //     (graphQLErrors && graphQLErrors[0].extensions.code === "invalid-jwt") ||
-  //     (networkError && networkError.message.indexOf("JWTExpired") !== -1)
-  //   ) {
-  //     store.dispatch("access/logout");
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (
+      (graphQLErrors && graphQLErrors[0].extensions.code === "invalid-jwt") ||
+      (networkError && networkError.message.indexOf("JWTExpired") !== -1)
+    ) {
+      // store.dispatch("access/logout");
+      Vue.notify({
+        group: "global",
+        title: "Session expired",
+        text: `Your session has expired! Please login again.`,
+        type: "error",
+        duration: 90000,
+      });
+      localStorage.removeItem("token");
+      console.log("signed out coz one of many reasons");
+      app.router.replace("/");
+      return;
+    } else if (graphQLErrors) {
+      // If there is a graphgl request error, the join all error messages and show them.
+      Vue.notify({
+        group: "global",
+        title: "Error",
+        text: `${
+          graphQLErrors
+            ? graphQLErrors.map((error) => error.message).join("<br/>")
+            : ""
+        }`,
+        type: "error",
+      });
+      console.log("Error", graphQLErrors);
+    }
 
-  //     this.$notify({
-  //       group: "global",
-  //       title: "Session expired",
-  //       text: `Session expired! Please login.`,
-  //       type: "error",
-  //     });
-
-  //     app.router.replace("/login");
-  //     return;
-  //   } else if (graphQLErrors) {
-  //     // If there is a graphgl request error, the join all error messages and show them.
-  //     this.$notify({
-  //       group: "global",
-  //       title: "Error",
-  //       text: `${
-  //         graphQLErrors
-  //           ? graphQLErrors.map((error) => error.message).join("<br/>")
-  //           : ""
-  //       }`,
-  //       type: "error",
-  //     });
-  //   }
-
-  //   if (networkError) {
-  //     this.$notify({
-  //       group: "global",
-  //       title: "Network Error",
-  //       text: `Couldn't connect to server.`,
-  //       type: "info",
-  //     });
-  //   }
-  // });
+    if (networkError) {
+      Vue.notify({
+        group: "global",
+        title: "Network Error",
+        text: `Couldn't connect to server.`,
+        type: "info",
+      });
+      console.log("network error");
+    }
+  });
 
   const getDefinition = ({ query }) => {
     const definition = getMainDefinition(query);
@@ -84,11 +87,11 @@ export default function ({ store, app }, inject) {
   cropconexAuthenticationLink = new ApolloLink(cropconexAuthenticationLink);
 
   const cropconexHTTPLink = new HttpLink({
-    uri: "http://localhost:8080/v1/graphql",
+    uri: process.env.BASE_URL,
   });
 
   const cropconexWSLink = new WebSocketLink({
-    uri: "ws://localhost:8080/v1/graphql",
+    uri: process.env.WS_URL,
     options: {
       reconnect: true,
       lazy: true,
@@ -104,7 +107,7 @@ export default function ({ store, app }, inject) {
 
   const cropconexApolloClient = new ApolloClient({
     // errorLink can be addes in the list below
-    link: from([cropconexAuthenticationLink, cropconexLink]),
+    link: from([errorLink, cropconexAuthenticationLink, cropconexLink]),
     cache: new InMemoryCache({
       addTypename: false,
     }),

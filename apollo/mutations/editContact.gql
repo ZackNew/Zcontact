@@ -1,0 +1,19 @@
+mutation editContact(
+  $id: Int!
+  $email: String
+  $image_url: String
+  $name: String!
+  $phone_number: String!
+) {
+  update_contacts_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      email: $email
+      image_url: $image_url
+      name: $name
+      phone_number: $phone_number
+    }
+  ) {
+    id
+  }
+}

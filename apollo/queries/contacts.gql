@@ -1,0 +1,9 @@
+query contactsList {
+  contacts {
+    id
+    name
+    email
+    phone_number
+    image_url
+  }
+}
