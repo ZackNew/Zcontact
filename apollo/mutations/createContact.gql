@@ -1,0 +1,18 @@
+mutation createContact(
+  $email: String
+  $image_url: String
+  $name: String!
+  $phone_number: String!
+) {
+  insert_contacts_one(
+    object: {
+      email: $email
+      image_url: $image_url
+      name: $name
+      phone_number: $phone_number
+    }
+  ) {
+    id
+    phone_number
+  }
+}

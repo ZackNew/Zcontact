@@ -21,35 +21,28 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ["~/plugins/apollo.js"],
+  plugins: [
+    "~/plugins/apollo.js",
+    "~/plugins/vuetify.js",
+    "~/plugins/notification.js",
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [],
+  buildModules: ["@nuxtjs/vuetify"],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [],
-  // "@nuxtjs/apollo"
-  // apollo: {
-  //   clientConfigs: {
-  //     default: "~/plugins/apollo-config.js",
-  //   },
-  //   defaultOptions: {
-  //     $query: {
-  //       loadingKey: "loading",
-  //       fetchPolicy: "cache-and-network",
-  //     },
-  //   },
-  //   authenticationType: "Bearer",
-  //   tokenName: "apollo-token",
-  //   cookieAttributes: {
-  //     expires: 7,
-  //   },
-  //   errorHandler: "~/plugins/error-handler.js",
-  // },
+  modules: ["nuxt-material-design-icons-iconfont", "@nuxtjs/apollo"],
+
+  apollo: {
+    clientConfigs: {},
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+  env: {
+    BASE_URL: process.env.BASE_URL,
+  },
 };
