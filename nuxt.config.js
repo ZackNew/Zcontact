@@ -25,6 +25,7 @@ export default {
     "~/plugins/apollo.js",
     "~/plugins/vuetify.js",
     "~/plugins/notification.js",
+    "~/plugins/phoneInput",
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

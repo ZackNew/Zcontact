@@ -1,10 +1,10 @@
 <template>
   <v-app>
     <Navbar />
-    <v-content>
-      <h1>Contacts List</h1>
+    <v-main class="mt-16 mx-10">
+      <h1 class="mb-5 text_primary--text">Contacts List</h1>
       <ContactsList />
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 

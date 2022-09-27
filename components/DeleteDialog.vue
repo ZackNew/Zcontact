@@ -27,9 +27,7 @@ import contactsList from "~/apollo/queries/contacts.gql";
 
 export default {
   data() {
-    return {
-      deleteDialogue: false,
-    };
+    return {};
   },
   methods: {
     confirmDelete() {
