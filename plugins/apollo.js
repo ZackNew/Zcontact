@@ -24,7 +24,7 @@ export default function ({ store, app }, inject) {
       (graphQLErrors && graphQLErrors[0].extensions.code === "invalid-jwt") ||
       (networkError && networkError.message.indexOf("JWTExpired") !== -1)
     ) {
-      // store.dispatch("access/logout");
+      store.dispatch("access/logout");
       Vue.notify({
         group: "global",
         title: "Session expired",
