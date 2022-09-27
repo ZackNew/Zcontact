@@ -15,18 +15,21 @@
                         >
                           Sign in to Zapp
                         </h1>
-                        <v-form>
+                        <v-form ref="form_signin">
                           <v-text-field
+                            required
                             dense
                             outlined
                             label="Name"
                             name="Name"
                             prepend-icon="person"
                             type="text"
+                            :rules="$store.state.rules.nameRules"
                             color="primary"
-                            v-model="signin_username"
+                            v-model="username"
                           />
                           <v-text-field
+                            required
                             dense
                             outlined
                             id="password"
@@ -34,8 +37,9 @@
                             name="password"
                             prepend-icon="lock"
                             type="password"
+                            :rules="$store.state.rules.passwordRules"
                             color="primary"
-                            v-model="signin_password"
+                            v-model="password"
                           />
                         </v-form>
                         <h3 class="text-center mt-4">Forgot your password ?</h3>
@@ -84,7 +88,7 @@
                         >
                           Create Account
                         </h1>
-                        <v-form>
+                        <v-form ref="form_signup">
                           <v-text-field
                             dense
                             outlined
@@ -92,19 +96,21 @@
                             name="Name"
                             prepend-icon="person"
                             type="text"
+                            :rules="$store.state.rules.nameRules"
                             color="primary"
-                            v-model="signin_username"
+                            v-model="username"
                           />
-                          <v-text-field
-                            dense
-                            outlined
-                            label="Phone Number"
-                            name="Phone"
-                            prepend-icon="phone"
-                            type="text"
-                            color="primary"
-                            v-model="phone_number"
-                          />
+                          <div class="d-flex mb-5">
+                            <v-icon class="mr-3">phone</v-icon>
+                            <VuePhoneNumberInput
+                              error-color="#440000"
+                              valid-color="#448AFF"
+                              default-country-code="ET"
+                              required
+                              color="#000000"
+                              v-model="phone_number"
+                            />
+                          </div>
                           <v-text-field
                             dense
                             outlined
@@ -112,10 +118,12 @@
                             name="Email"
                             prepend-icon="email"
                             type="text"
+                            :rules="$store.state.rules.emailRules"
                             color="primary"
                             v-model="email"
                           />
                           <v-text-field
+                            required
                             dense
                             outlined
                             id="password"
@@ -123,8 +131,9 @@
                             name="password"
                             prepend-icon="lock"
                             type="password"
+                            :rules="$store.state.rules.passwordRules"
                             color="primary"
-                            v-model="signin_password"
+                            v-model="password"
                           />
                         </v-form>
                       </v-card-text>
@@ -152,13 +161,14 @@
 <script>
 import signinUser from "~/apollo/mutations/signin.gql";
 import signupUser from "~/apollo/mutations/signup.gql";
+import VuePhoneNumberInput from "vue-phone-number-input";
 
 export default {
   name: "Authentication",
   data() {
     return {
-      signin_username: "",
-      signin_password: "",
+      username: "",
+      password: "",
       email: "",
       phone_number: "",
       step: 1,
@@ -166,41 +176,48 @@ export default {
   },
   methods: {
     signin() {
-      this.$apollo
-        .mutate({
-          mutation: signinUser,
-          variables: {
-            username: this.signin_username,
-            password: this.signin_password,
-          },
-        })
-        .then((data) => {
-          localStorage.setItem("token", data.data.signin.token);
-          this.$router.push({ path: "/Contacts" });
-        })
-        .catch((err) => {
-          console.log("asfa", err);
-        });
+      if (this.$refs.form_signin.validate()) {
+        this.$apollo
+          .mutate({
+            mutation: signinUser,
+            variables: {
+              username: this.username,
+              password: this.password,
+            },
+          })
+          .then((data) => {
+            localStorage.setItem("token", data.data.signin.token);
+            this.$router.push({ path: "/Contacts" });
+          })
+          .catch((err) => {
+            console.log("asfa", err);
+          });
+      }
     },
     signup() {
-      this.$apollo
-        .mutate({
-          mutation: signupUser,
-          variables: {
-            username: this.signin_username,
-            email: this.email,
-            phone_number: this.phone_number,
-            password: this.signin_password,
-          },
-        })
-        .then((data) => {
-          localStorage.setItem("token", data.data.signup.token);
-          this.$router.push({ path: "/Contacts" });
-        })
-        .catch((err) => {
-          console.log("errrrr", err);
-        });
+      if (this.$refs.form_signup.validate()) {
+        this.$apollo
+          .mutate({
+            mutation: signupUser,
+            variables: {
+              username: this.username,
+              email: this.email,
+              phone_number: this.phone_number,
+              password: this.password,
+            },
+          })
+          .then((data) => {
+            localStorage.setItem("token", data.data.signup.token);
+            this.$router.push({ path: "/Contacts" });
+          })
+          .catch((err) => {
+            console.log("errrrr", err);
+          });
+      }
     },
+  },
+  components: {
+    VuePhoneNumberInput,
   },
 };
 </script>

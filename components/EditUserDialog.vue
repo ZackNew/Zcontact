@@ -5,13 +5,12 @@
         <v-card-title>
           <span class="text-h5">Edit Contact</span>
         </v-card-title>
-
         <v-card-text>
           <v-container>
             <v-text-field
               dense
               outlined
-              label="Name"
+              label="name"
               name="Name"
               prepend-icon="person"
               type="text"
@@ -36,7 +35,7 @@
               name="Email"
               prepend-icon="email"
               type="text"
-              :rules="$store.state.rules.nameRules"
+              :rules="$store.state.rules.emailRules"
               color="primary"
               v-model="email"
             />
@@ -52,19 +51,16 @@
             />
           </v-container>
         </v-card-text>
-
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
             text
-            @click="$store.commit('TOOGLE_EDIT_DIALOG')"
+            @click="$store.commit('TOOGLE_EDIT_USER_DIALOG')"
           >
             Cancel
           </v-btn>
-          <v-btn color="blue darken-1" text @click="updateContact">
-            Save
-          </v-btn>
+          <v-btn color="blue darken-1" text @click="updateUser"> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -72,48 +68,43 @@
 </template>
 
 <script>
-import editContact from "~/apollo/mutations/editContact";
-import contactsList from "~/apollo/queries/contacts.gql";
 import VuePhoneNumberInput from "vue-phone-number-input";
+import editUser from "~/apollo/mutations/editUser.gql";
+import getcurrentUser from "~/apollo/queries/getCurrentUser.gql";
 
 export default {
-  name: "editContact",
   data() {
     return {
       username: null,
-      email: null,
       phone_number: null,
+      email: null,
       image_url: null,
     };
   },
   computed: {
-    editContact() {
-      return this.$store.getters.clickedContactState;
-    },
     dialog() {
-      return this.$store.getters.editContactDialogState;
+      return this.$store.state.editUserDialog;
     },
   },
   methods: {
-    updateContact() {
+    updateUser() {
       this.$apollo
         .mutate({
-          mutation: editContact,
+          mutation: editUser,
           variables: {
-            id: this.editContact.id,
+            username: this.username,
+            phone_number: this.phone_number,
             email: this.email,
             image_url: this.image_url,
-            name: this.username,
-            phone_number: this.phone_number,
           },
-          refetchQueries: [{ query: contactsList }],
+          refetchQueries: [{ query: getcurrentUser }],
         })
         .then((data) => {
-          this.$store.commit("TOOGLE_EDIT_DIALOG");
-          console.log("yes you updated", data);
+          console.log("updated user");
+          this.$store.commit("TOOGLE_EDIT_USER_DIALOG");
         })
         .catch((err) => {
-          console.log("error while updating", err);
+          console.log("no update", err);
         });
     },
   },
@@ -121,10 +112,14 @@ export default {
     VuePhoneNumberInput,
   },
   created() {
-    this.username = this.editContact.name;
-    this.email = this.editContact.email;
-    this.phone_number = this.editContact.phone_number;
-    this.image_url = this.editContact.image_url;
+    this.username = this.user[0].username;
+    this.phone_number = this.user[0].phone_number;
+    this.email = this.user[0].email;
+    this.image_url = this.user[0].image_url;
+    console.log("miiiiii", this.user);
+  },
+  props: {
+    user: Array,
   },
 };
 </script>

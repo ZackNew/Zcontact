@@ -1,0 +1,8 @@
+query getcurrentUser {
+  users {
+    username
+    phone_number
+    image_url
+    email
+  }
+}

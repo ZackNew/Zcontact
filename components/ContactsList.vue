@@ -8,6 +8,17 @@
         class="elevation-1"
         :search="search"
       >
+        <template v-slot:item.image="{ item }">
+          <v-avatar size="38">
+            <img
+              :src="
+                item.image_url ||
+                'https://www.stignatius.co.uk/wp-content/uploads/2020/10/default-user-icon.jpg'
+              "
+              alt=""
+            />
+          </v-avatar>
+        </template>
         <template v-slot:top>
           <v-toolbar flat>
             <v-text-field
@@ -45,12 +56,17 @@ export default {
   name: "Contacts",
   data() {
     return {
+      vvv: "",
       search: "",
       headers: [
         {
-          text: "Name",
+          text: "Image",
           align: "start",
           sortable: false,
+          value: "image",
+        },
+        {
+          text: "Name",
           value: "name",
         },
         { text: "Phone Number", value: "phone_number" },
@@ -70,6 +86,9 @@ export default {
     },
   },
   methods: {
+    mineeer() {
+      console.log("mimimi");
+    },
     deletePopup(event) {
       console.log(event);
       this.$store.dispatch("toogleDeleteDialog");
@@ -81,6 +100,10 @@ export default {
       this.$store.commit("SET_CLICKED_CONTACT", { target: event });
     },
   },
-  components: { AddContactDialog, DeleteDialog, EditContact },
+  components: {
+    AddContactDialog,
+    DeleteDialog,
+    EditContact,
+  },
 };
 </script>

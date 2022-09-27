@@ -1,4 +1,5 @@
 export const state = () => ({
+  editUserDialog: false,
   editContactDialog: false,
   deleteContactDialog: false,
   clickedContact: null,
@@ -13,6 +14,9 @@ export const getters = {
 export const mutations = {
   TOOGLE_EDIT_DIALOG(state) {
     state.editContactDialog = !state.editContactDialog;
+  },
+  TOOGLE_EDIT_USER_DIALOG(state) {
+    state.editUserDialog = !state.editUserDialog;
   },
   TOOGLE_DELETE_DIALOG(state) {
     state.deleteContactDialog = !state.deleteContactDialog;

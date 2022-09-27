@@ -1,0 +1,20 @@
+mutation editUser(
+  $email: String!
+  $image_url: String!
+  $phone_number: String!
+  $username: String!
+) {
+  update_users(
+    where: {}
+    _set: {
+      email: $email
+      image_url: $image_url
+      phone_number: $phone_number
+      username: $username
+    }
+  ) {
+    returning {
+      username
+    }
+  }
+}
